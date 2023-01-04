@@ -1,16 +1,33 @@
 import "react-native-gesture-handler";
-import { Button, Text, TextInput, StyleSheet, View } from "react-native";
+import {
+  Button,
+  Text,
+  TextInput,
+  StyleSheet,
+  View,
+  BackHandler,
+  ToastAndroid,
+  LogBox,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { signIn, signUp, logOut } from "./DataControl/UserAuth";
-import { useState } from "react";
+import { signIn, signUp, logOut } from "./FirestoreControl/UserAuth";
+import { useEffect, useState } from "react";
+import { readData, writeData } from "./FirestoreControl/DataControl";
+import { ItemsSummary } from "./Components/ItemsSummary";
 
 const Stack = createStackNavigator();
 
 function App() {
+  useEffect(() => {
+    LogBox.ignoreAllLogs(true);
+  });
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRoute={LoginScreen}>
+      <Stack.Navigator
+        initialRoute={LoginScreen}
+        screenOptions={{ headerLeft: null }}
+      >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
@@ -44,10 +61,25 @@ function LoginScreen({ navigation }) {
 }
 
 function HomeScreen({ navigation, route }) {
-  console.log(route.params.user);
-  return (
+  const [data, setData] = useState([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [uid, setUid] = useState(route.params.uid);
+  if (data.length === 0 && dataLoaded === false) {
+    readData(uid).then((dataSet) => {
+      setData([...dataSet]);
+      setDataLoaded(true);
+      ToastAndroid.show(
+        "Data Loaded".concat("" + data[0].name),
+        ToastAndroid.SHORT
+      );
+    });
+  }
+  return !dataLoaded ? (
+    <Text>Loading...</Text>
+  ) : (
     <View>
-      <Text>Hi! welcome home {route.params.user.email}</Text>
+      <Text>Hi! welcome home {uid}</Text>
+      <ItemsSummary data={data} />
       <Button title={"Log Out"} onPress={() => logOut(navigation)} />
     </View>
   );

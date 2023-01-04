@@ -4,13 +4,14 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { app } from "./FirebaseConfig";
+import { doc } from "firebase/firestore";
+import { app, fsDatabase } from "./FirebaseConfig";
 import { Alert, ToastAndroid } from "react-native";
 
 const auth = getAuth(app);
 export function signUp(email, password, navigation) {
   createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {
+    .then((userCredential) => {
       ToastAndroid.show("User Registered", ToastAndroid.SHORT);
       navigation.navigate("Login");
     })
@@ -25,7 +26,9 @@ export function signIn(email, password, navigation) {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       ToastAndroid.show("User Logged In", ToastAndroid.SHORT);
-      navigation.navigate("Home", { user: userCredential.user });
+      const uid = userCredential.user.uid;
+      const docRef = doc(fsDatabase, "users", uid);
+      navigation.navigate("Home", { uid: uid });
     })
     .catch((error) => {
       const errorCode = error.code;
