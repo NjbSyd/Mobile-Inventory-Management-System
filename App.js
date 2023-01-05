@@ -4,11 +4,11 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  ScrollView,
   View,
-  BackHandler,
-  ToastAndroid,
   LogBox,
 } from "react-native";
+import { LoadingIndicator } from "./Components/Loading";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { signIn, signUp, logOut } from "./FirestoreControl/UserAuth";
@@ -61,27 +61,27 @@ function LoginScreen({ navigation }) {
 }
 
 function HomeScreen({ navigation, route }) {
-  const [data, setData] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [uid, setUid] = useState(route.params.uid);
-  if (data.length === 0 && dataLoaded === false) {
+  useEffect(() => {
+    loadData();
+  }, []);
+  function loadData() {
     readData(uid).then((dataSet) => {
       setData([...dataSet]);
       setDataLoaded(true);
-      ToastAndroid.show(
-        "Data Loaded".concat("" + data[0].name),
-        ToastAndroid.SHORT
-      );
     });
   }
+  const [data, setData] = useState([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [uid, setUid] = useState(route.params.uid);
+
   return !dataLoaded ? (
-    <Text>Loading...</Text>
+    <LoadingIndicator />
   ) : (
-    <View>
+    <ScrollView>
       <Text>Hi! welcome home {uid}</Text>
       <ItemsSummary data={data} />
       <Button title={"Log Out"} onPress={() => logOut(navigation)} />
-    </View>
+    </ScrollView>
   );
 }
 
