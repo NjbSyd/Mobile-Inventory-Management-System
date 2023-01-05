@@ -1,21 +1,10 @@
 import "react-native-gesture-handler";
-import {
-  Button,
-  Text,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  View,
-  LogBox,
-} from "react-native";
-import { LoadingIndicator } from "./Components/Loading";
+import { Button, TextInput, StyleSheet, View, LogBox } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { signIn, signUp, logOut } from "./FirestoreControl/UserAuth";
+import { signIn, signUp } from "./Database/UserAuth";
 import { useEffect, useState } from "react";
-import { readData, writeData } from "./FirestoreControl/DataControl";
-import { ItemsSummary } from "./Components/ItemsSummary";
-import { Logout } from "./Components/Logout";
+import { HomeScreen } from "./View/Home";
 
 const Stack = createStackNavigator();
 
@@ -57,33 +46,6 @@ function LoginScreen({ navigation }) {
         onPress={() => signIn(email, password, navigation)}
       />
       <Button title="Sign Up" onPress={() => navigation.navigate("SignUp")} />
-    </View>
-  );
-}
-
-function HomeScreen({ navigation, route }) {
-  useEffect(() => {
-    loadData();
-  }, []);
-  function loadData() {
-    readData(uid).then((dataSet) => {
-      setData([...dataSet]);
-      setDataLoaded(true);
-    });
-  }
-  const [data, setData] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [uid, setUid] = useState(route.params.uid);
-
-  return !dataLoaded ? (
-    <LoadingIndicator />
-  ) : (
-    <View>
-      <ScrollView>
-        <Text>Hi! welcome home {uid}</Text>
-        <ItemsSummary data={data} />
-      </ScrollView>
-      <Logout onPress={() => logOut(navigation)} />
     </View>
   );
 }

@@ -1,17 +1,17 @@
 import { TouchableOpacity, StyleSheet } from "react-native";
-import { logOut } from "../FirestoreControl/UserAuth";
+import { logOut } from "../Database/UserAuth";
 import { Icon } from "@rneui/themed";
 
 export function Logout({ navigation }) {
   return (
-    <TouchableOpacity style={css.logOut} onPress={() => logOut(navigation)}>
+    <TouchableOpacity style={css.logOutBtn} onPress={() => logOut(navigation)}>
       <Icon name="logout" type="antdesign" size={30} color="#000" />
     </TouchableOpacity>
   );
 }
 
 const css = StyleSheet.create({
-  logOut: {
+  logOutBtn: {
     position: "absolute",
     bottom: 0,
     right: 0,

@@ -8,7 +8,6 @@ export async function readData(uid) {
     query.forEach((doc, index) => {
       data.push(doc.data());
     });
-    ToastAndroid.show(data.length + "", ToastAndroid.LONG);
   });
   return data;
 }
