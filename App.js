@@ -15,6 +15,7 @@ import { signIn, signUp, logOut } from "./FirestoreControl/UserAuth";
 import { useEffect, useState } from "react";
 import { readData, writeData } from "./FirestoreControl/DataControl";
 import { ItemsSummary } from "./Components/ItemsSummary";
+import { Logout } from "./Components/Logout";
 
 const Stack = createStackNavigator();
 
@@ -77,11 +78,13 @@ function HomeScreen({ navigation, route }) {
   return !dataLoaded ? (
     <LoadingIndicator />
   ) : (
-    <ScrollView>
-      <Text>Hi! welcome home {uid}</Text>
-      <ItemsSummary data={data} />
-      <Button title={"Log Out"} onPress={() => logOut(navigation)} />
-    </ScrollView>
+    <View>
+      <ScrollView>
+        <Text>Hi! welcome home {uid}</Text>
+        <ItemsSummary data={data} />
+      </ScrollView>
+      <Logout onPress={() => logOut(navigation)} />
+    </View>
   );
 }
 
