@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { Button, TextInput, View, StyleSheet } from "react-native";
 import { signUp } from "../Database/UserAuth";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 export function SignUpScreen({ navigation }) {
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setEmail("");
+        setPassword("");
+      };
+    }, [])
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
@@ -11,11 +21,13 @@ export function SignUpScreen({ navigation }) {
         style={css.input}
         onChangeText={(text) => setEmail(text)}
         placeholder="Email"
+        value={email}
       />
       <TextInput
         style={css.input}
         onChangeText={(text) => setPassword(text)}
         placeholder="Password"
+        value={password}
       />
       <Button
         title={"Sign Up"}

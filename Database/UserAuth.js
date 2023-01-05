@@ -27,7 +27,6 @@ export function signIn(email, password, navigation) {
     .then((userCredential) => {
       ToastAndroid.show("User Logged In", ToastAndroid.SHORT);
       const uid = userCredential.user.uid;
-      const docRef = doc(fsDatabase, "users", uid);
       navigation.navigate("Home", { uid: uid });
     })
     .catch((error) => {
