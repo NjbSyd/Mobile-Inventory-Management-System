@@ -27,7 +27,7 @@ export function ItemsSummary({ data, navigation }) {
             {" " + item.price}
           </Text>
           <Text style={css.label}>
-            <Icon name="location" type="entypo" size={15} color="#fff" />
+            <Icon name="hash" type="feather" size={15} color="#fff" />
             {" " + item.quantity}
           </Text>
         </View>

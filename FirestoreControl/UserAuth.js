@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc } from "firebase/firestore";
+import { addDoc, collection, doc } from "firebase/firestore";
 import { app, fsDatabase } from "./FirebaseConfig";
 import { Alert, ToastAndroid } from "react-native";
 
