@@ -4,15 +4,22 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { addDoc, collection, doc } from "firebase/firestore";
+import { addDoc, collection, where, getDocs, query } from "firebase/firestore";
 import { app, fsDatabase } from "./FirebaseConfig";
 import { Alert, ToastAndroid } from "react-native";
 
 const auth = getAuth(app);
-export function signUp(email, password, navigation) {
-  createUserWithEmailAndPassword(auth, email, password)
+export function signUp(info, navigation) {
+  createUserWithEmailAndPassword(auth, info.email, info.password)
     .then((userCredential) => {
       ToastAndroid.show("User Registered", ToastAndroid.SHORT);
+      addDoc(collection(fsDatabase, "users"), {
+        name: info.name,
+        email: info.email,
+        contact: info.contact,
+        address: info.address,
+        uid: userCredential.user.uid,
+      }).then((r) => r);
       navigation.navigate("Login");
     })
     .catch((error) => {
@@ -36,6 +43,15 @@ export function signIn(email, password, navigation) {
     });
 }
 
+export async function getUserInfo(uid) {
+  let userInfo = {};
+  const q = query(collection(fsDatabase, "users"), where("uid", "==", uid));
+  await getDocs(q).then((querySnapshot) => {
+    userInfo = querySnapshot.docs[0].data();
+  });
+  ToastAndroid.show(userInfo.name, ToastAndroid.SHORT);
+  return userInfo;
+}
 export function logOut(navigation) {
   signOut(auth)
     .then(() => {

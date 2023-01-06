@@ -8,7 +8,9 @@ import {
 import { Icon } from "@rneui/themed";
 
 export function ItemsSummary({ data, navigation }) {
-  if (data === undefined) return null;
+  if (data === undefined) {
+    return null;
+  }
   return data.map((item, index) => {
     return (
       <TouchableOpacity

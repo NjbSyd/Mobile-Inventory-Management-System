@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { LogBox } from "react-native";
+import { LogBox, StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useEffect } from "react";
@@ -8,6 +8,8 @@ import { HomeScreen } from "./View/Home";
 import { LoginScreen } from "./View/Login";
 import { SignUpScreen } from "./View/SignUp";
 import { Logout } from "./Components/Logout";
+import * as React from "react";
+import { Text } from "@rneui/base";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -17,16 +19,22 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRoute={LoginScreen}
-        screenOptions={({ navigation }) => ({
-          headerLeft: () => <Logout navigation={navigation} />,
-        })}
+        screenOptions={{
+          headerLeft: null,
+        }}
       >
         <Stack.Screen
           name="Login"
           component={LoginScreen}
           options={{
             headerLeft: null,
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+            headerTitle: () => <Text style={css.LogInTitle}>Login</Text>,
+            headerTitleContainerStyle: {
+              height: 80,
+            },
           }}
         />
         <Stack.Screen
@@ -34,10 +42,58 @@ export default function App() {
           component={SignUpScreen}
           options={{
             headerLeft: null,
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+            headerTitle: () => <Text style={css.LogInTitle}>Registration</Text>,
+            headerTitleContainerStyle: {
+              height: 80,
+            },
           }}
         />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={({ navigation }) => ({
+            headerLeft: () => <Logout navigation={navigation} />,
+            headerTitle: () => <Text style={css.mainTitle}>Home</Text>,
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+          })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const css = StyleSheet.create({
+  LogInTitle: {
+    fontSize: 40,
+    borderColor: "#90A19D",
+    borderWidth: 2,
+    fontWeight: "bold",
+    color: "#363432",
+    width: 350,
+    textAlign: "center",
+    marginLeft: 5,
+    marginVertical: 10,
+    backgroundColor: "#F0941F",
+    borderRadius: 20,
+    padding: 5,
+    elevation: 10,
+  },
+  mainTitle: {
+    fontSize: 20,
+    borderColor: "#90A19D",
+    borderWidth: 2,
+    fontWeight: "bold",
+    color: "#363432",
+    width: 300,
+    textAlign: "center",
+    backgroundColor: "#F0941F",
+    borderRadius: 20,
+    padding: 5,
+    elevation: 10,
+  },
+});
