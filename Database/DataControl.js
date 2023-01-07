@@ -12,7 +12,8 @@ export async function readData(uid) {
   return data;
 }
 
-export async function writeData(uid, data) {
-  const docRef = await addDoc(collection(fsDatabase, uid), data);
-  return docRef.id;
+export async function addNewItem(uid, data) {
+  await addDoc(collection(fsDatabase, uid), data).then(() => {
+    ToastAndroid.show("Item Added", ToastAndroid.SHORT);
+  });
 }

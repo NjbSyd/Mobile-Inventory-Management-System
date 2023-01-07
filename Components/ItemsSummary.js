@@ -17,7 +17,7 @@ export function ItemsSummary({ data, navigation }) {
         key={index}
         style={css.button}
         onPress={() => {
-          ToastAndroid.show("Item Selected", ToastAndroid.SHORT);
+          navigation.navigate("Details", { info: item });
         }}
       >
         <View style={css.topRowContainer}>

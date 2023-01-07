@@ -1,15 +1,22 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { readData } from "../Database/DataControl";
 import { LoadingIndicator } from "../Components/Loading";
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { ScrollView, Text, View, StyleSheet, Button } from "react-native";
 import { ItemsSummary } from "../Components/ItemsSummary";
 import { Logout } from "../Components/Logout";
 import { getUserInfo } from "../Database/UserAuth";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function HomeScreen({ navigation, route }) {
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+      return () => {
+        setData([]);
+        setDataLoaded(false);
+      };
+    }, [])
+  );
   function loadData() {
     getUserInfo(uid).then((r) => {
       setUserInfo(r);
@@ -26,12 +33,22 @@ export function HomeScreen({ navigation, route }) {
 
   return !dataLoaded ? (
     <LoadingIndicator />
-  ) : (
+  ) : data.length > 0 ? (
     <View style={css.MainView}>
       <Text>Hi! welcome home {userInfo.name}</Text>
       <ScrollView style={{ width: 350 }}>
-        <ItemsSummary data={data} />
+        <ItemsSummary data={data} navigation={navigation} />
       </ScrollView>
+      <Button
+        title={"Add Item"}
+        onPress={() => {
+          navigation.navigate("ItemEntry", { uid: uid });
+        }}
+      />
+    </View>
+  ) : (
+    <View>
+      <Text>No data found!!</Text>
     </View>
   );
 }

@@ -10,6 +10,8 @@ import { SignUpScreen } from "./View/SignUp";
 import { Logout } from "./Components/Logout";
 import * as React from "react";
 import { Text } from "@rneui/base";
+import { Details } from "./View/Detail";
+import { ItemEntry } from "./View/ItemEntry";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -57,6 +59,30 @@ export default function App() {
           options={({ navigation }) => ({
             headerLeft: () => <Logout navigation={navigation} />,
             headerTitle: () => <Text style={css.mainTitle}>Home</Text>,
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+          })}
+        />
+        <Stack.Screen
+          name={"ItemEntry"}
+          component={ItemEntry}
+          options={({ navigation, route }) => ({
+            headerLeft: () => <Logout navigation={navigation} />,
+            headerTitle: () => <Text style={css.mainTitle}>Item Entry</Text>,
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+          })}
+        />
+        <Stack.Screen
+          name={"Details"}
+          component={Details}
+          options={({ navigation, route }) => ({
+            headerLeft: () => <Logout navigation={navigation} />,
+            headerTitle: () => (
+              <Text style={css.mainTitle}>{route.params.info.name}</Text>
+            ),
             headerStyle: {
               backgroundColor: "#90A19D",
             },
