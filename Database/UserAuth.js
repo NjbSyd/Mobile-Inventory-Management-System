@@ -32,7 +32,6 @@ export function signUp(info, navigation) {
 export function signIn(email, password, navigation) {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      ToastAndroid.show("User Logged In", ToastAndroid.SHORT);
       const uid = userCredential.user.uid;
       navigation.navigate("Home", { uid: uid });
     })
@@ -49,7 +48,13 @@ export async function getUserInfo(uid) {
   await getDocs(q).then((querySnapshot) => {
     userInfo = querySnapshot.docs[0].data();
   });
-  ToastAndroid.show(userInfo.name, ToastAndroid.SHORT);
+  ToastAndroid.showWithGravityAndOffset(
+    "Welcome " + userInfo.name,
+    ToastAndroid.SHORT,
+    ToastAndroid.TOP,
+    0,
+    100
+  );
   return userInfo;
 }
 export function logOut(navigation) {

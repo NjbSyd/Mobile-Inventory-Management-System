@@ -1,13 +1,5 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  ToastAndroid,
-} from "react-native";
-import { Icon } from "@rneui/themed";
-
-export function ItemsSummary({ data, navigation }) {
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+export function ItemsSummary({ data, navigation, uid }) {
   if (data === undefined) {
     return null;
   }
@@ -17,21 +9,11 @@ export function ItemsSummary({ data, navigation }) {
         key={index}
         style={css.button}
         onPress={() => {
-          navigation.navigate("Details", { info: item });
+          navigation.navigate("Details", { info: item, uid: uid });
         }}
       >
         <View style={css.topRowContainer}>
           <Text style={css.buttonText}>{item.name}</Text>
-        </View>
-        <View style={css.rowContainer}>
-          <Text style={css.label}>
-            <Icon name="email" type="entypo" size={15} color="#fff" />
-            {" " + item.price}
-          </Text>
-          <Text style={css.label}>
-            <Icon name="hash" type="feather" size={15} color="#fff" />
-            {" " + item.quantity}
-          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -40,22 +22,20 @@ export function ItemsSummary({ data, navigation }) {
 
 const css = StyleSheet.create({
   button: {
-    borderColor: "rgba(72,255,0,0.51)",
-    borderWidth: 2,
-    backgroundColor: "#2a2d3e",
+    backgroundColor: "#F0941F",
     padding: 10,
     margin: 5,
     borderRadius: 10,
   },
   buttonText: {
-    color: "white",
+    color: "#363432",
     fontSize: 25,
     fontWeight: "bold",
     textAlign: "center",
     flex: 1,
     borderRadius: 10,
     padding: 5,
-    backgroundColor: "rgba(72,255,0,0.2)",
+    backgroundColor: "white",
   },
   label: {
     fontSize: 16,
@@ -69,14 +49,5 @@ const css = StyleSheet.create({
   },
   topRowContainer: {
     flexDirection: "row",
-  },
-  mfLogo: {
-    width: 50,
-    borderRadius: 25,
-    backgroundColor: "rgba(72,255,0,0.2)",
-    textAlign: "center",
-    color: "white",
-    textAlignVertical: "center",
-    marginRight: 10,
   },
 });
