@@ -6,38 +6,38 @@ import {
   Text,
   View,
   StyleSheet,
-  Button,
   TouchableOpacity,
 } from "react-native";
 import { ItemsSummary } from "../Components/ItemsSummary";
-import { Logout } from "../Components/Logout";
-import { getUserInfo, signIn } from "../Database/UserAuth";
+import { getUserInfo } from "../Database/DataControl";
 import { useFocusEffect } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
+import { getData, storeData } from "../Database/AsyncStorageControl";
 
 export function HomeScreen({ navigation, route }) {
   useFocusEffect(
     useCallback(() => {
-      loadData();
+      loadData().then((r) => r);
       return () => {
         setData([]);
         setDataLoaded(false);
+        setMenuOpen(false);
       };
     }, [])
   );
-  function loadData() {
-    getUserInfo(uid).then((r) => {
-      setUserInfo(r);
-    });
+  async function loadData() {
+    const userInfo = await getData("@user_key");
+    setUid(userInfo.uid);
     readData(uid).then((dataSet) => {
       setData([...dataSet]);
+      storeData("@data_key", dataSet).then((r) => console.log("Data stored"));
       setDataLoaded(true);
     });
   }
-  const [userInfo, setUserInfo] = useState({});
   const [data, setData] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [uid, setUid] = useState(route.params.uid);
+  const [uid, setUid] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return !dataLoaded ? (
     <LoadingIndicator />
@@ -46,12 +46,45 @@ export function HomeScreen({ navigation, route }) {
       <ScrollView style={{ width: 350 }}>
         <ItemsSummary data={data} navigation={navigation} uid={uid} />
       </ScrollView>
-      <TouchableOpacity
-        style={css.AddItemBtnFloat}
-        onPress={() => navigation.navigate("ItemEntry", { uid: uid })}
-      >
-        <Icon name="plus" type={"antdesign"} size={40} color="#F0941F" />
-      </TouchableOpacity>
+      {menuOpen ? (
+        <>
+          <TouchableOpacity
+            style={[css.BtnFloat, { bottom: 130 }]}
+            onPress={() => navigation.navigate("ItemEntry", { uid: uid })}
+          >
+            <Icon name="plus" type={"antdesign"} size={40} color="#363432" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[css.BtnFloat, { bottom: 75 }]}
+            onPress={() => console.log("search")}
+          >
+            <Icon name="search1" type={"antdesign"} size={35} color="#363432" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={css.BtnFloat}
+            onPress={() => setMenuOpen(!menuOpen)}
+          >
+            <Icon
+              name="dots-three-vertical"
+              type={"entypo"}
+              size={30}
+              color="#363432"
+            />
+          </TouchableOpacity>
+        </>
+      ) : (
+        <TouchableOpacity
+          style={css.BtnFloat}
+          onPress={() => setMenuOpen(!menuOpen)}
+        >
+          <Icon
+            name="dots-three-horizontal"
+            type={"entypo"}
+            size={30}
+            color="#363432"
+          />
+        </TouchableOpacity>
+      )}
     </View>
   ) : (
     <View style={css.MainView}>
@@ -96,10 +129,12 @@ const css = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 22,
   },
-  AddItemBtnFloat: {
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#363432",
+  BtnFloat: {
+    backgroundColor: "#F0941F",
+    width: 50,
+    height: 50,
+    borderWidth: 2,
+    borderColor: "#90A19D",
     borderRadius: 50,
     alignSelf: "center",
     alignItems: "center",
@@ -107,5 +142,6 @@ const css = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
+    elevation: 10,
   },
 });

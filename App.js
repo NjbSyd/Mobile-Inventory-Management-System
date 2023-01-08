@@ -1,9 +1,8 @@
 import "react-native-gesture-handler";
-import { LogBox, StyleSheet, View } from "react-native";
+import { LogBox, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useEffect } from "react";
-
 import { HomeScreen } from "./View/Home";
 import { LoginScreen } from "./View/Login";
 import { SignUpScreen } from "./View/SignUp";
@@ -12,6 +11,8 @@ import * as React from "react";
 import { Text } from "@rneui/base";
 import { Details } from "./View/Detail";
 import { ItemEntry } from "./View/ItemEntry";
+import { ProfileBtn } from "./Components/ProfileBtn";
+import { Profile } from "./View/Profile";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -21,15 +22,19 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{
-          headerLeft: null,
-        }}
+        screenOptions={({ navigation, route }) => ({
+          headerLeft: () => <Logout navigation={navigation} />,
+          headerRight: () => (
+            <ProfileBtn navigation={navigation} route={route} />
+          ),
+        })}
       >
         <Stack.Screen
           name="Login"
           component={LoginScreen}
           options={{
             headerLeft: null,
+            headerRight: null,
             headerStyle: {
               backgroundColor: "#90A19D",
             },
@@ -44,6 +49,7 @@ export default function App() {
           component={SignUpScreen}
           options={{
             headerLeft: null,
+            headerRight: null,
             headerStyle: {
               backgroundColor: "#90A19D",
             },
@@ -57,7 +63,6 @@ export default function App() {
           name="Home"
           component={HomeScreen}
           options={({ navigation }) => ({
-            headerLeft: () => <Logout navigation={navigation} />,
             headerTitle: () => <Text style={css.mainTitle}>Home</Text>,
             headerStyle: {
               backgroundColor: "#90A19D",
@@ -68,7 +73,6 @@ export default function App() {
           name={"ItemEntry"}
           component={ItemEntry}
           options={({ navigation, route }) => ({
-            headerLeft: () => <Logout navigation={navigation} />,
             headerTitle: () => <Text style={css.mainTitle}>Item Entry</Text>,
             headerStyle: {
               backgroundColor: "#90A19D",
@@ -79,10 +83,20 @@ export default function App() {
           name={"Details"}
           component={Details}
           options={({ navigation, route }) => ({
-            headerLeft: () => <Logout navigation={navigation} />,
             headerTitle: () => (
               <Text style={css.mainTitle}>{route.params.info.name}</Text>
             ),
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+          })}
+        />
+        <Stack.Screen
+          name={"Profile"}
+          component={Profile}
+          options={({ navigation, route }) => ({
+            headerRight: null,
+            headerTitle: () => <Text style={css.mainTitle}>Profile</Text>,
             headerStyle: {
               backgroundColor: "#90A19D",
             },
@@ -115,7 +129,7 @@ const css = StyleSheet.create({
     borderWidth: 2,
     fontWeight: "bold",
     color: "#363432",
-    width: 300,
+    width: 270,
     textAlign: "center",
     backgroundColor: "#F0941F",
     borderRadius: 20,

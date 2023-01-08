@@ -1,4 +1,4 @@
-import { fsDatabase } from "./FirebaseConfig";
+import { fsDatabase, storage } from "./FirebaseConfig";
 import {
   collection,
   getDocs,
@@ -6,7 +6,10 @@ import {
   doc,
   deleteDoc,
   setDoc,
+  query,
+  where,
 } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ToastAndroid } from "react-native";
 
 export async function readData(uid) {
@@ -57,4 +60,31 @@ export async function updateData(uid, data) {
         ToastAndroid.SHORT
       );
     });
+}
+
+export async function getUserInfo(uid) {
+  let userInfo = {};
+  const q = query(collection(fsDatabase, "users"), where("uid", "==", uid));
+  await getDocs(q).then((querySnapshot) => {
+    userInfo = querySnapshot.docs[0].data();
+  });
+  return userInfo;
+}
+
+export async function uploadProfilePic(uid, image) {
+  const imgRef = ref(storage, `profiles/${uid}`);
+  const profile = await fetch(image);
+  const imageBytes = await profile.blob();
+  uploadBytes(imgRef, imageBytes).then((snapshot) => {
+    ToastAndroid.show("Profile Picture Uploaded", ToastAndroid.SHORT);
+  });
+}
+
+export async function getProfilePic(uid) {
+  let image = "";
+  const imgRef = ref(storage, `profiles/${uid}`);
+  await getDownloadURL(imgRef).then((url) => {
+    image = url;
+  });
+  return image;
 }

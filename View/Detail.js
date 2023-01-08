@@ -2,13 +2,13 @@ import { useCallback, useState } from "react";
 import {
   StyleSheet,
   TextInput,
-  ToastAndroid,
+  ScrollView,
   TouchableOpacity,
   View,
 } from "react-native";
 import { Text } from "@rneui/base";
 import { useFocusEffect } from "@react-navigation/native";
-import { addNewItem, removeDoc, updateData } from "../Database/DataControl";
+import { removeDoc, updateData } from "../Database/DataControl";
 import { Icon } from "@rneui/themed";
 
 export function Details({ navigation, route }) {
@@ -24,7 +24,7 @@ export function Details({ navigation, route }) {
   const [edit, setEdit] = useState(false);
   return (
     <View style={css.MainContainer}>
-      <View style={css.InnerContainer}>
+      <ScrollView style={css.InnerContainer}>
         <Text style={css.label}>Item ID</Text>
         <TextInput style={css.input} value={info.documentId} editable={false} />
         <Text style={css.label}>Name</Text>
@@ -88,9 +88,17 @@ export function Details({ navigation, route }) {
             >
               <Icon name="edit" size={40} color="#fff" />
             </TouchableOpacity>
+            <TouchableOpacity
+              style={css.Btn}
+              onPress={() => {
+                navigation.navigate("Home", { uid: route.params.uid });
+              }}
+            >
+              <Icon name="home" type={"entypo"} size={40} color="#fff" />
+            </TouchableOpacity>
           </View>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 }

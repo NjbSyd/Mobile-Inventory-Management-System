@@ -4,15 +4,23 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { addDoc, collection, where, getDocs, query } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { app, fsDatabase } from "./FirebaseConfig";
+import {
+  getProfilePic,
+  getUserInfo,
+  readData,
+  uploadProfilePic,
+} from "./DataControl";
 import { Alert, ToastAndroid } from "react-native";
+import { storeData } from "./AsyncStorageControl";
 
 const auth = getAuth(app);
-export function signUp(info, navigation) {
+export function signUp(info, navigation, image) {
   createUserWithEmailAndPassword(auth, info.email, info.password)
     .then((userCredential) => {
       ToastAndroid.show("User Registered", ToastAndroid.SHORT);
+      uploadProfilePic(userCredential.user.uid, image);
       addDoc(collection(fsDatabase, "users"), {
         name: info.name,
         email: info.email,
@@ -30,10 +38,19 @@ export function signUp(info, navigation) {
 }
 
 export function signIn(email, password, navigation) {
+  function loadData(uid) {
+    getUserInfo(uid).then((r) => {
+      storeData("@user_key", r).then((r) => console.log("User info stored"));
+    });
+    readData(uid).then((dataSet) => {
+      storeData("@data_key", dataSet).then((r) => console.log("Data stored"));
+    });
+  }
   signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
       const uid = userCredential.user.uid;
-      navigation.navigate("Home", { uid: uid });
+      loadData(uid);
+      navigation.navigate("Profile");
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -42,21 +59,6 @@ export function signIn(email, password, navigation) {
     });
 }
 
-export async function getUserInfo(uid) {
-  let userInfo = {};
-  const q = query(collection(fsDatabase, "users"), where("uid", "==", uid));
-  await getDocs(q).then((querySnapshot) => {
-    userInfo = querySnapshot.docs[0].data();
-  });
-  ToastAndroid.showWithGravityAndOffset(
-    "Welcome " + userInfo.name,
-    ToastAndroid.SHORT,
-    ToastAndroid.TOP,
-    0,
-    100
-  );
-  return userInfo;
-}
 export function logOut(navigation) {
   signOut(auth)
     .then(() => {

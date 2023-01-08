@@ -4,6 +4,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { useState } from "react";
 import { addNewItem } from "../Database/DataControl";
@@ -11,7 +12,7 @@ export function ItemEntry({ navigation, route }) {
   const [item, setItem] = useState({});
   return (
     <View style={css.MainContainer}>
-      <View style={css.InnerContainer}>
+      <ScrollView style={css.InnerContainer}>
         <Text style={css.label}>Name</Text>
         <TextInput
           style={css.input}
@@ -50,13 +51,13 @@ export function ItemEntry({ navigation, route }) {
           style={css.Btn}
           onPress={() => {
             addNewItem(route.params.uid, item).then((r) => {
-              navigation.navigate("Home", { uid: route.params.uid });
+              navigation.navigate("Home");
             });
           }}
         >
           <Text style={css.BtnTxt}>Save</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -69,7 +70,7 @@ const css = StyleSheet.create({
   },
   InnerContainer: {
     marginHorizontal: 20,
-    paddingVertical: 100,
+    paddingVertical: 50,
     backgroundColor: "#F0941F",
     borderRadius: 20,
     elevation: 12,

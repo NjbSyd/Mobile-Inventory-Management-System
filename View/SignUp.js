@@ -10,7 +10,8 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { signUp } from "../Database/UserAuth";
-import { CheckBox } from "@rneui/themed";
+import ImageSelector from "../Components/ImageSelector";
+import React from "react";
 
 export function SignUpScreen({ navigation }) {
   useFocusEffect(
@@ -24,6 +25,7 @@ export function SignUpScreen({ navigation }) {
           lastName: "",
           contact: "",
         });
+        setImage(null);
         setSelection(true);
       };
     }, [])
@@ -38,6 +40,7 @@ export function SignUpScreen({ navigation }) {
     contact: "",
   });
   const [isSelected, setSelection] = useState(true);
+  const [image, setImage] = useState(null);
   return (
     <ScrollView style={css.MainContainer}>
       <View style={css.InnerContainer}>
@@ -94,6 +97,7 @@ export function SignUpScreen({ navigation }) {
           secureTextEntry={isSelected}
           onChangeText={(text) => setInfo({ ...info, confirmPassword: text })}
         />
+        <ImageSelector image={image} setImage={setImage} />
         <TouchableOpacity
           style={css.SignUpBtn}
           onPress={() => {
@@ -106,7 +110,7 @@ export function SignUpScreen({ navigation }) {
               info.contact
             ) {
               if (info.password === info.confirmPassword) {
-                signUp(info, navigation);
+                signUp(info, navigation, image);
               } else {
                 ToastAndroid.show("Passwords do not match", ToastAndroid.SHORT);
               }
