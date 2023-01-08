@@ -107,7 +107,8 @@ export function SignUpScreen({ navigation }) {
               info.confirmPassword &&
               info.name &&
               info.address &&
-              info.contact
+              info.contact &&
+              image
             ) {
               if (info.password === info.confirmPassword) {
                 signUp(info, navigation, image);
