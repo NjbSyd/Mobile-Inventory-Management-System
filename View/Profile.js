@@ -19,6 +19,12 @@ export function Profile({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.coverPicContainer}>
+        <Image
+          style={styles.coverPic}
+          source={require("../Images/cover.jpg")}
+        />
+      </View>
       <View style={styles.profilePicContainer}>
         <Image
           style={styles.profilePic}
@@ -39,17 +45,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#90A19D",
   },
   profilePicContainer: {
     borderWidth: 1,
     borderColor: "#000000",
-    borderRadius: 50,
     overflow: "hidden",
+    position: "absolute",
+    elevation: 10,
+    shadowColor: "white",
+    shadowOpacity: 1,
+    top: 140,
+    left: 15,
+
+    padding: 5,
+    borderRadius: 120,
+    backgroundColor: "#FFFFFF",
   },
   profilePic: {
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
   },
   nameText: {
     fontSize: 20,
@@ -63,5 +79,18 @@ const styles = StyleSheet.create({
   contactText: {
     fontSize: 16,
     marginTop: 10,
+  },
+  coverPicContainer: {
+    height: 200,
+    width: "100%",
+    margin: 20,
+    marginBottom: 150,
+    backgroundColor: "#000000",
+    borderRadiusTopLeft: 10,
+    borderRadiusTopRight: 10,
+  },
+  coverPic: {
+    height: 200,
+    width: "100%",
   },
 });
