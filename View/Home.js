@@ -14,34 +14,43 @@ import { getData, storeData } from "../Database/AsyncStorageControl";
 import { useFocusEffect } from "@react-navigation/native";
 
 export function HomeScreen({ navigation, route }) {
-  useEffect(() => {
-    loadData().then((data) => {
-      setDataLoaded(true);
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(async () => {
+      await getData("@user_key").then((r) => {
+        setUid(r.uid);
+      });
+      await getData("@data_key").then((r) => {
+        setData(r);
+        setDataLoaded(true);
+      });
+    }, [])
+  );
 
-  async function loadData() {
-    await getData("@user_key").then((r) => {
-      setUid(r.uid);
-    });
-    await readData(uid).then(async (dataSet) => {
-      setData(dataSet);
-      await storeData("@data_key", dataSet);
-      setDataLoaded(true);
-    });
-    return true;
-  }
-  if (!dataLoaded) {
-    loadData().then((r) => r);
-  }
   const [data, setData] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [uid, setUid] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  return !dataLoaded ? (
-    <LoadingIndicator />
-  ) : data.length > 0 ? (
+  if (!dataLoaded) {
+    return <LoadingIndicator />;
+  }
+  if (data.length === 0) {
+    return (
+      <View style={css.MainView}>
+        <Text style={css.text}>No data found!!</Text>
+        <TouchableOpacity
+          style={css.AddItemBtnStatic}
+          onPress={() => navigation.navigate("ItemEntry", { uid: uid })}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <Icon name="plus" type={"antdesign"} size={30} color="#F0941F" />
+            <Text style={css.AddItemBtnTxt}>Add Item?</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  return (
     <View style={css.MainView}>
       <ScrollView style={{ width: 350 }}>
         <ItemsSummary data={data} navigation={navigation} uid={uid} />
@@ -85,19 +94,6 @@ export function HomeScreen({ navigation, route }) {
           />
         </TouchableOpacity>
       )}
-    </View>
-  ) : (
-    <View style={css.MainView}>
-      <Text style={css.text}>No data found!!</Text>
-      <TouchableOpacity
-        style={css.AddItemBtnStatic}
-        onPress={() => navigation.navigate("ItemEntry", { uid: uid })}
-      >
-        <View style={{ flexDirection: "row" }}>
-          <Icon name="plus" type={"antdesign"} size={30} color="#F0941F" />
-          <Text style={css.AddItemBtnTxt}>Add Item?</Text>
-        </View>
-      </TouchableOpacity>
     </View>
   );
 }

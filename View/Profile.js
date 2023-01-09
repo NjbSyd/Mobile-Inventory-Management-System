@@ -75,26 +75,6 @@ export function Profile({ navigation }) {
             source={require("../Images/list.png")}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Search");
-          }}
-        >
-          <Image
-            style={{ width: 50, height: 50 }}
-            source={require("../Images/search.png")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("ItemEntry");
-          }}
-        >
-          <Image
-            style={{ width: 50, height: 50 }}
-            source={require("../Images/addlist.png")}
-          />
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -172,11 +152,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   bottomBtnContainer: {
-    width: "100%",
+    width: "40%",
     height: 100,
     position: "absolute",
     bottom: 10,
+    left: "30%",
     elevation: 10,
+
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",

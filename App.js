@@ -73,7 +73,13 @@ export default function App() {
           name={"ItemEntry"}
           component={ItemEntry}
           options={({ navigation, route }) => ({
-            headerTitle: () => <Text style={css.mainTitle}>Item Entry</Text>,
+            headerRight: null,
+            headerLeft: null,
+            headerTitle: () => (
+              <Text style={[css.mainTitle, { width: 350, marginLeft: 7 }]}>
+                Item Entry
+              </Text>
+            ),
             headerStyle: {
               backgroundColor: "#90A19D",
             },
@@ -83,8 +89,12 @@ export default function App() {
           name={"Details"}
           component={Details}
           options={({ navigation, route }) => ({
+            headerRight: null,
+            headerLeft: null,
             headerTitle: () => (
-              <Text style={css.mainTitle}>{route.params.info.name}</Text>
+              <Text style={[css.mainTitle, { width: 350, marginLeft: 7 }]}>
+                {route.params.info.name}
+              </Text>
             ),
             headerStyle: {
               backgroundColor: "#90A19D",
@@ -96,7 +106,9 @@ export default function App() {
           component={Profile}
           options={{
             headerRight: null,
-            headerTitle: () => <Text style={css.mainTitle}>Profile</Text>,
+            headerTitle: () => (
+              <Text style={[css.mainTitle, { width: 320 }]}>Profile</Text>
+            ),
             headerStyle: {
               backgroundColor: "#90A19D",
             },
@@ -106,7 +118,13 @@ export default function App() {
           name={"Search"}
           component={Search}
           options={{
-            headerTitle: () => <Text style={css.mainTitle}>Search</Text>,
+            headerRight: null,
+            headerLeft: null,
+            headerTitle: () => (
+              <Text style={[css.mainTitle, { width: 350, marginLeft: 7 }]}>
+                Search
+              </Text>
+            ),
             headerStyle: {
               backgroundColor: "#90A19D",
             },
@@ -140,6 +158,19 @@ const css = StyleSheet.create({
     fontWeight: "bold",
     color: "#363432",
     width: 270,
+    textAlign: "center",
+    backgroundColor: "#F0941F",
+    borderRadius: 20,
+    padding: 5,
+    elevation: 10,
+  },
+  longmainTitle: {
+    fontSize: 20,
+    borderColor: "#90A19D",
+    borderWidth: 2,
+    fontWeight: "bold",
+    color: "#363432",
+    width: 350,
     textAlign: "center",
     backgroundColor: "#F0941F",
     borderRadius: 20,

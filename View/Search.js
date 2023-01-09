@@ -5,8 +5,9 @@ import {
   Text,
   ActivityIndicator,
   ToastAndroid,
+  TouchableOpacity,
 } from "react-native";
-import { SearchBar } from "@rneui/themed";
+import { Icon, SearchBar } from "@rneui/themed";
 import { Options } from "../Components/Selector";
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -39,6 +40,12 @@ export function Search({ navigation }) {
   const [loading, setLoading] = useState(false);
   return (
     <View style={css.mainContainer}>
+      <TouchableOpacity
+        style={css.BtnFloat}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Icon name="home" type={"entypo"} size={30} color="#363432" />
+      </TouchableOpacity>
       <View style={css.searchBarContainer}>
         <TextInput
           value={searchQuery}
@@ -92,5 +99,20 @@ const css = StyleSheet.create({
     flexDirection: "row",
     height: 50,
     paddingLeft: 20,
+  },
+  BtnFloat: {
+    backgroundColor: "#F0941F",
+    width: 50,
+    height: 50,
+    borderWidth: 2,
+    borderColor: "#90A19D",
+    borderRadius: 50,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    elevation: 10,
   },
 });

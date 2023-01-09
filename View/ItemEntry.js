@@ -41,7 +41,9 @@ export function ItemEntry({ navigation }) {
           placeholder={"Enter Item Quantity"}
           keyboardType={"numeric"}
           onChangeText={(text) => {
-            setItem({ ...item, quantity: text });
+            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
+              setItem({ ...item, quantity: text });
+            }
           }}
           value={item.quantity}
         />
@@ -51,7 +53,9 @@ export function ItemEntry({ navigation }) {
           placeholder={"Enter Item Price"}
           keyboardType={"numeric"}
           onChangeText={(text) => {
-            setItem({ ...item, price: text });
+            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
+              setItem({ ...item, price: text });
+            }
           }}
           value={item.price}
         />

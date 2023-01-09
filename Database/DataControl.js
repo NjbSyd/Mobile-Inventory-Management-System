@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ToastAndroid } from "react-native";
+import { storeData } from "./AsyncStorageControl";
 
 export async function readData(uid) {
   const data = [];
@@ -44,16 +45,22 @@ export async function searchData(uid, field, value) {
 }
 
 export async function addNewItem(uid, data) {
-  await addDoc(collection(fsDatabase, uid), data).then(() => {
+  await addDoc(collection(fsDatabase, uid), data).then(async () => {
     ToastAndroid.show("Item Added", ToastAndroid.SHORT);
+    await loadData(uid).then((r) => {
+      console.log("Data reloaded after adding " + data.name);
+    });
   });
 }
 
 export async function removeDoc(uId, docId) {
   const docRef = await doc(fsDatabase, uId, docId);
   await deleteDoc(docRef)
-    .then(() => {
+    .then(async () => {
       ToastAndroid.show("Document successfully deleted!", ToastAndroid.SHORT);
+      await loadData(uId).then((r) => {
+        console.log("Data reloaded after deleting " + docId);
+      });
     })
     .catch((error) => {
       ToastAndroid.show("Error removing document: ", ToastAndroid.SHORT);
@@ -69,8 +76,11 @@ export async function updateData(uid, data) {
     price: data.price,
     supplier: data.supplier,
   })
-    .then(() => {
+    .then(async () => {
       ToastAndroid.show("Item updated", ToastAndroid.SHORT);
+      await loadData(uid).then((r) => {
+        console.log("Data reloaded after updating " + data.name);
+      });
     })
     .catch((error) => {
       ToastAndroid.show(
@@ -105,4 +115,14 @@ export async function getProfilePic(uid) {
     image = url;
   });
   return image;
+}
+
+async function loadData(uid) {
+  await getUserInfo(uid).then((r) => {
+    storeData("@user_key", r).then((r) => r);
+  });
+  await readData(uid).then((dataSet) => {
+    storeData("@data_key", dataSet).then((r) => r);
+  });
+  return true;
 }

@@ -40,7 +40,11 @@ export function Details({ navigation, route }) {
           value={info.quantity}
           editable={edit}
           keyboardType={"numeric"}
-          onChangeText={(text) => setInfo({ ...info, quantity: text })}
+          onChangeText={(text) => {
+            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
+              setInfo({ ...info, quantity: text });
+            }
+          }}
         />
         <Text style={css.label}>Price</Text>
         <TextInput
@@ -48,7 +52,11 @@ export function Details({ navigation, route }) {
           value={info.price}
           editable={edit}
           keyboardType={"numeric"}
-          onChangeText={(text) => setInfo({ ...info, price: text })}
+          onChangeText={(text) => {
+            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
+              setInfo({ ...info, price: text });
+            }
+          }}
         />
         <Text style={css.label}>Supplier</Text>
         <TextInput
