@@ -8,12 +8,20 @@ export const Options = (props) => {
       value: "name",
     },
     {
-      label: "Quantity",
-      value: "quantity",
+      label: "QTY<=",
+      value: "quantity,<=",
     },
     {
-      label: "Price",
-      value: "price",
+      label: "QTY>=",
+      value: "quantity,>=",
+    },
+    {
+      label: "Price<=",
+      value: "price,<=",
+    },
+    {
+      label: "Price>=",
+      value: "price>=",
     },
     {
       label: "Supplier",

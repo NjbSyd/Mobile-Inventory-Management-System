@@ -9,7 +9,7 @@ export function ItemsSummary({ data, navigation, uid }) {
         key={index}
         style={css.button}
         onPress={() => {
-          navigation.navigate("Details", { info: item, uid: uid });
+          navigation.navigate("Details", { info: item });
         }}
       >
         <View style={css.topRowContainer}>

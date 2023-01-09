@@ -5,23 +5,53 @@ import {
   ScrollView,
   TouchableOpacity,
   View,
+  ToastAndroid,
 } from "react-native";
 import { Text } from "@rneui/base";
 import { useFocusEffect } from "@react-navigation/native";
-import { removeDoc, updateData } from "../Database/DataControl";
+import { addNewItem, removeDoc, updateData } from "../Database/DataControl";
 import { Icon } from "@rneui/themed";
+import { getData } from "../Database/AsyncStorageControl";
 
 export function Details({ navigation, route }) {
   useFocusEffect(
     useCallback(() => {
       setInfo(route.params.info);
-      return () => {
-        setInfo({});
-      };
+      getUid().then((r) => r);
     }, [])
   );
+  const [uid, setUid] = useState("");
   const [info, setInfo] = useState(route.params.info);
   const [edit, setEdit] = useState(false);
+  async function getUid() {
+    await getData("@user_key").then((r) => {
+      setUid(r.uid);
+    });
+  }
+
+  function handleSubmit() {
+    if (info.name && info.quantity && info.price && info.supplier) {
+      if (parseInt(info.quantity) > 0 && parseInt(info.price) > 0) {
+        let newItem = {
+          name: info.name,
+          quantity: parseInt(info.quantity),
+          price: parseInt(info.price),
+          supplier: info.supplier,
+          documentId: info.documentId,
+        };
+        updateData(uid, newItem).then((r) => {
+          navigation.navigate("Home");
+        });
+      } else {
+        ToastAndroid.show(
+          "Quantity and Price must be greater than 0",
+          ToastAndroid.SHORT
+        );
+      }
+    } else {
+      ToastAndroid.show("All fields are required", ToastAndroid.SHORT);
+    }
+  }
   return (
     <View style={css.MainContainer}>
       <ScrollView style={css.InnerContainer}>
@@ -37,25 +67,23 @@ export function Details({ navigation, route }) {
         <Text style={css.label}>Quantity</Text>
         <TextInput
           style={css.input}
-          value={info.quantity}
+          value={info.quantity.toString()}
           editable={edit}
           keyboardType={"numeric"}
           onChangeText={(text) => {
-            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
-              setInfo({ ...info, quantity: text });
-            }
+            text = text.replace(/[^0-9]/g, "");
+            setInfo({ ...info, quantity: text });
           }}
         />
         <Text style={css.label}>Price</Text>
         <TextInput
           style={css.input}
-          value={info.price}
+          value={info.price.toString()}
           editable={edit}
           keyboardType={"numeric"}
           onChangeText={(text) => {
-            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
-              setInfo({ ...info, price: text });
-            }
+            text = text.replace(/[^0-9]/g, "");
+            setInfo({ ...info, price: text });
           }}
         />
         <Text style={css.label}>Supplier</Text>
@@ -66,14 +94,7 @@ export function Details({ navigation, route }) {
           onChangeText={(text) => setInfo({ ...info, supplier: text })}
         />
         {edit ? (
-          <TouchableOpacity
-            style={css.Btn}
-            onPress={() => {
-              updateData(route.params.uid, info).then((r) => {
-                setEdit(false);
-              });
-            }}
-          >
+          <TouchableOpacity style={css.Btn} onPress={() => handleSubmit()}>
             <Text style={css.BtnTxt}>Save</Text>
           </TouchableOpacity>
         ) : (
@@ -81,8 +102,8 @@ export function Details({ navigation, route }) {
             <TouchableOpacity
               style={css.Btn}
               onPress={() => {
-                removeDoc(route.params.uid, info.documentId).then((r) => {
-                  navigation.navigate("Home", { uid: route.params.uid });
+                removeDoc(uid, info.documentId).then((r) => {
+                  navigation.navigate("Home");
                 });
               }}
             >

@@ -28,7 +28,15 @@ export async function readData(uid) {
 
 export async function searchData(uid, field, value) {
   const data = [];
-  const q = query(collection(fsDatabase, uid), where(field, "==", value));
+  let opStr = "==";
+  if (field.includes(",")) {
+    let temp = field.split(",");
+    field = temp[0];
+    opStr = temp[1];
+    ToastAndroid.show(opStr, ToastAndroid.SHORT);
+    value = parseInt(value);
+  }
+  const q = query(collection(fsDatabase, uid), where(field, opStr, value));
   await getDocs(q)
     .then((query) => {
       query.forEach((doc, index) => {

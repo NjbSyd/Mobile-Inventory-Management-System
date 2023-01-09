@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  ToastAndroid,
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { addNewItem } from "../Database/DataControl";
@@ -23,6 +24,36 @@ export function ItemEntry({ navigation }) {
   );
   const [item, setItem] = useState({});
   const [uid, setUid] = useState();
+
+  function handleSubmit() {
+    if (
+      item.name !== "" &&
+      item.quantity !== "" &&
+      item.price !== "" &&
+      item.supplier !== ""
+    ) {
+      if (parseInt(item.quantity) > 0 && parseInt(item.price) > 0) {
+        let newItem = {
+          name: item.name,
+          quantity: parseInt(item.quantity),
+          price: parseInt(item.price),
+          supplier: item.supplier,
+        };
+        addNewItem(uid, newItem).then((r) => {
+          navigation.navigate("Home");
+        });
+      } else {
+        ToastAndroid.show(
+          "Quantity and Price must be greater than 0",
+          ToastAndroid.SHORT
+        );
+        setItem({ ...item, price: "", quantity: "" });
+      }
+    } else {
+      ToastAndroid.show("All fields are required", ToastAndroid.SHORT);
+    }
+  }
+
   return (
     <View style={css.MainContainer}>
       <ScrollView style={css.InnerContainer}>
@@ -41,9 +72,8 @@ export function ItemEntry({ navigation }) {
           placeholder={"Enter Item Quantity"}
           keyboardType={"numeric"}
           onChangeText={(text) => {
-            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
-              setItem({ ...item, quantity: text });
-            }
+            text = text.replace(/[^0-9]/g, "");
+            setItem({ ...item, quantity: text });
           }}
           value={item.quantity}
         />
@@ -53,9 +83,8 @@ export function ItemEntry({ navigation }) {
           placeholder={"Enter Item Price"}
           keyboardType={"numeric"}
           onChangeText={(text) => {
-            if (/^\d*[.]?\d*$/.test(text) && parseInt(text) >= 1) {
-              setItem({ ...item, price: text });
-            }
+            text = text.replace(/[^0-9]/g, "");
+            setItem({ ...item, price: text });
           }}
           value={item.price}
         />
@@ -68,14 +97,7 @@ export function ItemEntry({ navigation }) {
           }}
           value={item.supplier}
         />
-        <TouchableOpacity
-          style={css.Btn}
-          onPress={() => {
-            addNewItem(uid, item).then((r) => {
-              navigation.navigate("Home");
-            });
-          }}
-        >
+        <TouchableOpacity style={css.Btn} onPress={() => handleSubmit()}>
           <Text style={css.BtnTxt}>Save</Text>
         </TouchableOpacity>
       </ScrollView>

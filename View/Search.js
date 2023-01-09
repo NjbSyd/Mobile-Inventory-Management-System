@@ -25,6 +25,7 @@ export function Search({ navigation }) {
   );
 
   function search(id, field, value) {
+    value = value.trim();
     setLoading(true);
     searchData(id, field, value).then((r) => {
       setData(r);
@@ -84,7 +85,7 @@ export function Search({ navigation }) {
 const css = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: "#3b3b3b",
+    backgroundColor: "#90A19D",
   },
   searchBar: {
     backgroundColor: "#fff",
@@ -94,6 +95,7 @@ const css = StyleSheet.create({
     borderColor: "#000",
     width: "70%",
     height: 50,
+    borderWidth: 1,
   },
   searchBarContainer: {
     flexDirection: "row",
