@@ -25,6 +25,24 @@ export async function readData(uid) {
   return data;
 }
 
+export async function searchData(uid, field, value) {
+  const data = [];
+  const q = query(collection(fsDatabase, uid), where(field, "==", value));
+  await getDocs(q)
+    .then((query) => {
+      query.forEach((doc, index) => {
+        data.push(doc.data());
+      });
+      for (let i = 0; i < data.length; i++) {
+        data[i].documentId = query.docs[i].id;
+      }
+    })
+    .catch((e) => {
+      ToastAndroid.show("No Data Found!!", ToastAndroid.SHORT);
+    });
+  return data;
+}
+
 export async function addNewItem(uid, data) {
   await addDoc(collection(fsDatabase, uid), data).then(() => {
     ToastAndroid.show("Item Added", ToastAndroid.SHORT);

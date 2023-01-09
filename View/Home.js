@@ -56,7 +56,7 @@ export function HomeScreen({ navigation, route }) {
           </TouchableOpacity>
           <TouchableOpacity
             style={[css.BtnFloat, { bottom: 75 }]}
-            onPress={() => console.log("search")}
+            onPress={() => navigation.navigate("Search")}
           >
             <Icon name="search1" type={"antdesign"} size={35} color="#363432" />
           </TouchableOpacity>

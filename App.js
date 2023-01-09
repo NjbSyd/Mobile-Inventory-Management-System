@@ -13,6 +13,7 @@ import { Details } from "./View/Detail";
 import { ItemEntry } from "./View/ItemEntry";
 import { ProfileBtn } from "./Components/ProfileBtn";
 import { Profile } from "./View/Profile";
+import { Search } from "./View/Search";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -96,6 +97,16 @@ export default function App() {
           options={{
             headerRight: null,
             headerTitle: () => <Text style={css.mainTitle}>Profile</Text>,
+            headerStyle: {
+              backgroundColor: "#90A19D",
+            },
+          }}
+        />
+        <Stack.Screen
+          name={"Search"}
+          component={Search}
+          options={{
+            headerTitle: () => <Text style={css.mainTitle}>Search</Text>,
             headerStyle: {
               backgroundColor: "#90A19D",
             },

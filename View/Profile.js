@@ -16,10 +16,14 @@ export function Profile({ navigation }) {
     const userInfo = await getData("@user_key");
     setUser(userInfo);
     console.log(userInfo);
-
     const profile = await getProfilePic(userInfo.uid);
     setProfilePic(profile);
     setProfilePicLoaded(true);
+    return () => {
+      setProfilePicLoaded(false);
+      setProfilePic(null);
+      setUser({});
+    };
   }, []);
   const [user, setUser] = useState({});
   const [profilePic, setProfilePic] = useState(null);
@@ -73,7 +77,7 @@ export function Profile({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            console.log("Search");
+            navigation.navigate("Search");
           }}
         >
           <Image
@@ -109,8 +113,8 @@ const styles = StyleSheet.create({
     elevation: 10,
     shadowColor: "white",
     shadowOpacity: 1,
-    top: 140,
-    left: 15,
+    top: 90,
+    left: "25%",
     padding: 5,
     borderRadius: 120,
     backgroundColor: "#FFFFFF",
@@ -126,10 +130,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
-
   otherTextContainer: {
     marginLeft: 20,
-
     marginTop: 5,
     height: 30,
     flexDirection: "row",
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   coverPicContainer: {
     height: 200,
     width: "100%",
-    marginBottom: 150,
+    marginBottom: 85,
     overflow: "hidden",
     borderRadiusTopLeft: 50,
     borderRadiusTopRight: 50,
