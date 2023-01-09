@@ -13,14 +13,15 @@ import {
   uploadProfilePic,
 } from "./DataControl";
 import { Alert, ToastAndroid } from "react-native";
-import { storeData } from "./AsyncStorageControl";
+import { removeData, storeData } from "./AsyncStorageControl";
 
 const auth = getAuth(app);
 export function signUp(info, navigation, image) {
   createUserWithEmailAndPassword(auth, info.email, info.password)
     .then((userCredential) => {
       ToastAndroid.show("User Registered", ToastAndroid.SHORT);
-      uploadProfilePic(userCredential.user.uid, image);
+      uploadProfilePic(userCredential.user.uid, image).then((r) => r);
+
       addDoc(collection(fsDatabase, "users"), {
         name: info.name,
         email: info.email,
@@ -38,19 +39,21 @@ export function signUp(info, navigation, image) {
 }
 
 export function signIn(email, password, navigation) {
-  function loadData(uid) {
-    getUserInfo(uid).then((r) => {
-      storeData("@user_key", r).then((r) => console.log("User info stored"));
+  async function loadData(uid) {
+    await getUserInfo(uid).then((r) => {
+      storeData("@user_key", r).then((r) => r);
     });
-    readData(uid).then((dataSet) => {
-      storeData("@data_key", dataSet).then((r) => console.log("Data stored"));
+    await readData(uid).then((dataSet) => {
+      storeData("@data_key", dataSet).then((r) => r);
     });
+    return true;
   }
   signInWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       const uid = userCredential.user.uid;
-      loadData(uid);
-      navigation.navigate("Profile");
+      await loadData(uid).then((r) => {
+        navigation.navigate("Profile");
+      });
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -63,6 +66,8 @@ export function logOut(navigation) {
   signOut(auth)
     .then(() => {
       ToastAndroid.show("User Logged Out", ToastAndroid.SHORT);
+      removeData("@user_key").then((r) => r);
+      removeData("@data_key").then((r) => r);
       navigation.popToTop();
     })
     .catch((error) => {

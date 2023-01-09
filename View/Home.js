@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { readData } from "../Database/DataControl";
+import { getUserInfo, readData } from "../Database/DataControl";
 import { LoadingIndicator } from "../Components/Loading";
 import {
   ScrollView,
@@ -9,30 +9,30 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { ItemsSummary } from "../Components/ItemsSummary";
-import { getUserInfo } from "../Database/DataControl";
-import { useFocusEffect } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
 import { getData, storeData } from "../Database/AsyncStorageControl";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function HomeScreen({ navigation, route }) {
-  useFocusEffect(
-    useCallback(() => {
-      loadData().then((r) => r);
-      return () => {
-        setData([]);
-        setDataLoaded(false);
-        setMenuOpen(false);
-      };
-    }, [])
-  );
-  async function loadData() {
-    const userInfo = await getData("@user_key");
-    setUid(userInfo.uid);
-    readData(uid).then((dataSet) => {
-      setData([...dataSet]);
-      storeData("@data_key", dataSet).then((r) => console.log("Data stored"));
+  useEffect(() => {
+    loadData().then((data) => {
       setDataLoaded(true);
     });
+  }, []);
+
+  async function loadData() {
+    await getData("@user_key").then((r) => {
+      setUid(r.uid);
+    });
+    await readData(uid).then(async (dataSet) => {
+      setData(dataSet);
+      await storeData("@data_key", dataSet);
+      setDataLoaded(true);
+    });
+    return true;
+  }
+  if (!dataLoaded) {
+    loadData().then((r) => r);
   }
   const [data, setData] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);

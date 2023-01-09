@@ -6,10 +6,23 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { addNewItem } from "../Database/DataControl";
-export function ItemEntry({ navigation, route }) {
+import { getData } from "../Database/AsyncStorageControl";
+import { useFocusEffect } from "@react-navigation/native";
+export function ItemEntry({ navigation }) {
+  useFocusEffect(
+    useCallback(() => {
+      getData("@user_key").then((data) => {
+        setUid(data.uid);
+      });
+      return () => {
+        setItem({});
+      };
+    }, [])
+  );
   const [item, setItem] = useState({});
+  const [uid, setUid] = useState();
   return (
     <View style={css.MainContainer}>
       <ScrollView style={css.InnerContainer}>
@@ -20,6 +33,7 @@ export function ItemEntry({ navigation, route }) {
           onChangeText={(text) => {
             setItem({ ...item, name: text });
           }}
+          value={item.name}
         />
         <Text style={css.label}>Quantity</Text>
         <TextInput
@@ -29,6 +43,7 @@ export function ItemEntry({ navigation, route }) {
           onChangeText={(text) => {
             setItem({ ...item, quantity: text });
           }}
+          value={item.quantity}
         />
         <Text style={css.label}>Price</Text>
         <TextInput
@@ -38,6 +53,7 @@ export function ItemEntry({ navigation, route }) {
           onChangeText={(text) => {
             setItem({ ...item, price: text });
           }}
+          value={item.price}
         />
         <Text style={css.label}>Supplier</Text>
         <TextInput
@@ -46,11 +62,12 @@ export function ItemEntry({ navigation, route }) {
           onChangeText={(text) => {
             setItem({ ...item, supplier: text });
           }}
+          value={item.supplier}
         />
         <TouchableOpacity
           style={css.Btn}
           onPress={() => {
-            addNewItem(route.params.uid, item).then((r) => {
+            addNewItem(uid, item).then((r) => {
               navigation.navigate("Home");
             });
           }}

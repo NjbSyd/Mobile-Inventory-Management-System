@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { getData } from "../Database/AsyncStorageControl";
-import { View, Text, Image, StyleSheet, ToastAndroid } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ToastAndroid,
+  TouchableOpacity,
+} from "react-native";
 import { getProfilePic } from "../Database/DataControl";
+import { Icon } from "@rneui/themed";
 
 export function Profile({ navigation }) {
   useEffect(async () => {
@@ -35,9 +43,55 @@ export function Profile({ navigation }) {
           }
         />
       </View>
-      <Text style={styles.nameText}>{user.name}</Text>
-      <Text style={styles.emailText}>{user.email}</Text>
-      <Text style={styles.contactText}>{user.contact}</Text>
+      <View style={styles.nameTextContainer}>
+        <Text style={styles.nameText}>{user.name}</Text>
+      </View>
+      <View style={styles.otherInfoContainer}>
+        <View style={styles.otherTextContainer}>
+          <Icon name="email" type={"entypo"} size={25} color="#000" />
+          <Text style={styles.infoTxt}>{user.email}</Text>
+        </View>
+        <View style={styles.otherTextContainer}>
+          <Icon name="phone" type={"antdesign"} size={25} color="#000" />
+          <Text style={styles.infoTxt}>{user.contact}</Text>
+        </View>
+        <View style={styles.otherTextContainer}>
+          <Icon name="location-pin" type={"entypo"} size={25} color="#000" />
+          <Text style={styles.infoTxt}>{user.address}</Text>
+        </View>
+      </View>
+      <View style={styles.bottomBtnContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        >
+          <Image
+            style={{ width: 50, height: 50 }}
+            source={require("../Images/list.png")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            console.log("Search");
+          }}
+        >
+          <Image
+            style={{ width: 50, height: 50 }}
+            source={require("../Images/search.png")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("ItemEntry");
+          }}
+        >
+          <Image
+            style={{ width: 50, height: 50 }}
+            source={require("../Images/addlist.png")}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -57,7 +111,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     top: 140,
     left: 15,
-
     padding: 5,
     borderRadius: 120,
     backgroundColor: "#FFFFFF",
@@ -68,29 +121,64 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   nameText: {
-    fontSize: 20,
+    fontSize: 40,
     fontWeight: "bold",
-    marginTop: 20,
+    marginBottom: 20,
+    textAlign: "center",
   },
-  emailText: {
-    fontSize: 16,
-    marginTop: 10,
-  },
-  contactText: {
-    fontSize: 16,
-    marginTop: 10,
+
+  otherTextContainer: {
+    marginLeft: 20,
+
+    marginTop: 5,
+    height: 30,
+    flexDirection: "row",
+    alignContent: "center",
   },
   coverPicContainer: {
     height: 200,
     width: "100%",
-    margin: 20,
     marginBottom: 150,
-    backgroundColor: "#000000",
-    borderRadiusTopLeft: 10,
-    borderRadiusTopRight: 10,
+    overflow: "hidden",
+    borderRadiusTopLeft: 50,
+    borderRadiusTopRight: 50,
+    elevation: 5,
   },
   coverPic: {
     height: 200,
     width: "100%",
+  },
+  nameTextContainer: {
+    width: "100%",
+    marginTop: 10,
+    elevation: 5,
+    shadowOpacity: 1,
+    shadowColor: "orange",
+  },
+  otherInfoContainer: {
+    width: "100%",
+    marginHorizontal: 5,
+  },
+  infoTxt: {
+    color: "white",
+    fontSize: 15,
+    marginLeft: 10,
+    backgroundColor: "#363432",
+    borderRadius: 10,
+    height: 30,
+    paddingVertical: 3,
+    paddingHorizontal: 6,
+  },
+  bottomBtnContainer: {
+    width: "100%",
+    height: 100,
+    position: "absolute",
+    bottom: 10,
+    elevation: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    backgroundColor: "#363432",
+    borderRadius: 50,
   },
 });

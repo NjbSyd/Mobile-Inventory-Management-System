@@ -22,11 +22,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={({ navigation, route }) => ({
+        initialRouteName={"Login"}
+        screenOptions={({ navigation }) => ({
           headerLeft: () => <Logout navigation={navigation} />,
-          headerRight: () => (
-            <ProfileBtn navigation={navigation} route={route} />
-          ),
+          headerRight: () => <ProfileBtn navigation={navigation} />,
         })}
       >
         <Stack.Screen
@@ -94,13 +93,13 @@ export default function App() {
         <Stack.Screen
           name={"Profile"}
           component={Profile}
-          options={({ navigation, route }) => ({
+          options={{
             headerRight: null,
             headerTitle: () => <Text style={css.mainTitle}>Profile</Text>,
             headerStyle: {
               backgroundColor: "#90A19D",
             },
-          })}
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

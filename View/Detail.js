@@ -91,7 +91,7 @@ export function Details({ navigation, route }) {
             <TouchableOpacity
               style={css.Btn}
               onPress={() => {
-                navigation.navigate("Home", { uid: route.params.uid });
+                navigation.navigate("Home");
               }}
             >
               <Icon name="home" type={"entypo"} size={40} color="#fff" />

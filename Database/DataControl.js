@@ -14,7 +14,7 @@ import { ToastAndroid } from "react-native";
 
 export async function readData(uid) {
   const data = [];
-  const docsSnap = await getDocs(collection(fsDatabase, uid)).then((query) => {
+  await getDocs(collection(fsDatabase, uid)).then((query) => {
     query.forEach((doc, index) => {
       data.push(doc.data());
     });
