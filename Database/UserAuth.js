@@ -21,7 +21,6 @@ export function signUp(info, navigation, image) {
     .then((userCredential) => {
       ToastAndroid.show("User Registered", ToastAndroid.SHORT);
       uploadProfilePic(userCredential.user.uid, image).then((r) => r);
-
       addDoc(collection(fsDatabase, "users"), {
         name: info.name,
         email: info.email,

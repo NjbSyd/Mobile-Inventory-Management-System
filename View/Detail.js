@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Text } from "@rneui/base";
 import { useFocusEffect } from "@react-navigation/native";
-import { addNewItem, removeDoc, updateData } from "../Database/DataControl";
+import { removeDoc, updateData } from "../Database/DataControl";
 import { Icon } from "@rneui/themed";
 import { getData } from "../Database/AsyncStorageControl";
 
@@ -40,7 +40,7 @@ export function Details({ navigation, route }) {
           documentId: info.documentId,
         };
         updateData(uid, newItem).then((r) => {
-          navigation.navigate("Home");
+          setEdit(false);
         });
       } else {
         ToastAndroid.show(
